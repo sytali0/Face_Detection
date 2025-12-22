@@ -1,7 +1,3 @@
-# =========================================================
-# FACE RECOGNITION - FULL PIPELINE (DÜZELTİLMİŞ)
-# =========================================================
-
 import numpy as np
 import cv2
 import os
@@ -11,24 +7,20 @@ from sklearn.svm import SVC
 from sklearn.metrics import classification_report, accuracy_score
 
 # =========================================================
-# 2️⃣ HAAR CASCADE TANIMLARI
+# GÖRKEM ÖZER
 # =========================================================
-# Not: Yolun doğruluğundan emin olun. 
+
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 eye_cascade  = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
 
-# =========================================================
-# 3️⃣ DATASET YOLLARI
-# =========================================================
+
 train_klasor = r"newdatasets\football_stars_train"
 test_klasor  = r"newdatasets\football_stars_test"
 
 cropped_train = r"newdatasets\cropped_faces_train"
 cropped_test  = r"newdatasets\cropped_faces_test"
 
-# =========================================================
-# 4️⃣ YÜZ TESPİT + KIRPMA
-# =========================================================
+
 def yuzleri_kirp(giris_klasor, cikti_klasor):
     if not os.path.exists(cikti_klasor):
         os.makedirs(cikti_klasor)
@@ -74,14 +66,12 @@ def yuzleri_kirp(giris_klasor, cikti_klasor):
 
     print(f"--- {cikti_klasor} tamamlandı ---")
 
-# =========================================================
-# 5️⃣ TRAIN & TEST YÜZLERİNİ KIRP
-# =========================================================
+
 yuzleri_kirp(train_klasor, cropped_train)
 yuzleri_kirp(test_klasor,  cropped_test)
 
 # =========================================================
-# 6️⃣ EMBEDDING ÜRETME
+#   Seyit Ali Arslan
 # =========================================================
 def embedding_uret(root_dir):
     X, y = [], []
@@ -108,9 +98,7 @@ def embedding_uret(root_dir):
 
     return np.array(X), np.array(y)
 
-# =========================================================
-# 7️⃣ MODEL EĞİTİMİ + TEST
-# =========================================================
+
 X_train, y_train = embedding_uret(cropped_train)
 X_test,  y_test  = embedding_uret(cropped_test)
 
@@ -129,6 +117,10 @@ else:
     # SVM Model - Probability=True önemli
     model = SVC(kernel="linear", probability=True)
     model.fit(X_train, y_train_enc)
+    
+# =========================================================
+# Ahmet Kurt
+# =========================================================
 
     pred = model.predict(X_test)
     print(f"\nAccuracy Score: {accuracy_score(y_test_enc, pred):.4f}")
@@ -137,9 +129,7 @@ else:
     target_names = le.inverse_transform(unique_labels)
     print(classification_report(y_test_enc, pred, target_names=target_names))
 
-# =========================================================
-# 8️⃣ TEK FOTOĞRAFTAN TEST FONKSİYONU
-# =========================================================
+
 def tek_fotograftan_tahmin(img_path, threshold=0.20):
     img_bgr = cv2.imread(img_path)
     if img_bgr is None:
@@ -174,9 +164,6 @@ def tek_fotograftan_tahmin(img_path, threshold=0.20):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-# =========================================================
-# 9️⃣ ÇALIŞTIRMA
-# =========================================================
-# Kendi yolunu buraya yaz:
+
 test_path = r"C:\Users\seyit\Desktop\Face_Detection\newdatasets\football_stars_test\Antony/antony.jpg"
 tek_fotograftan_tahmin(test_path)
