@@ -6,9 +6,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report, accuracy_score
 
-# =========================================================
+
 # GÖRKEM ÖZER
-# =========================================================
+
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 eye_cascade  = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
@@ -70,12 +70,12 @@ def yuzleri_kirp(giris_klasor, cikti_klasor):
 yuzleri_kirp(train_klasor, cropped_train)
 yuzleri_kirp(test_klasor,  cropped_test)
 
-# =========================================================
+
 #   Seyit Ali Arslan
-# =========================================================
+
 def embedding_uret(root_dir):
     X, y = [], []
-
+#Her klasöre tek tek girip embedding üreteceğiz
     for label in os.listdir(root_dir):
         class_dir = os.path.join(root_dir, label)
         if not os.path.isdir(class_dir):
@@ -83,13 +83,15 @@ def embedding_uret(root_dir):
 
         for dosya in os.listdir(class_dir):
             path = os.path.join(class_dir, dosya)
+            #Görseli bgr olarak oku
             img_bgr = cv2.imread(path)
             if img_bgr is None: continue
 
             img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
             
-            # Kırpılmış resimde tekrar yüz bul (HOG modeli hızlıdır)
+            #Yüzleri bul hog bu iş için iyi
             locs = face_recognition.face_locations(img_rgb, model="hog")
+            #Bulunan yüzler için embedding çıkar
             encs = face_recognition.face_encodings(img_rgb, locs)
 
             if len(encs) > 0:
@@ -98,29 +100,29 @@ def embedding_uret(root_dir):
 
     return np.array(X), np.array(y)
 
-
+#train ve test için embedding üretiyoruz
 X_train, y_train = embedding_uret(cropped_train)
 X_test,  y_test  = embedding_uret(cropped_test)
-
+#klasörler boş mu dolu mu kontrol ediyoruz
 if len(X_train) == 0 or len(X_test) == 0:
     print("HATA: Yüz embeddingleri oluşturulamadı. Dataset yollarını kontrol edin.")
 else:
-    # Test setinde, train setinde olmayan bir sınıf varsa temizle
+    # Test setinde, train setinde olmayan bir sınıf varsa temizliyoruz
     train_labels = set(y_train)
     mask = np.array([lbl in train_labels for lbl in y_test])
     X_test, y_test = X_test[mask], y_test[mask]
-
+    #Her bir embedding için ayrı sayısal değer atıyoruz
     le = LabelEncoder()
     y_train_enc = le.fit_transform(y_train)
     y_test_enc  = le.transform(y_test)
 
-    # SVM Model - Probability=True önemli
+    # SVM Model, probability=true kullanıyoruz çünkü bizim kodumuzda güven skoru var onu belirlemek için
     model = SVC(kernel="linear", probability=True)
     model.fit(X_train, y_train_enc)
     
-# =========================================================
+
 # Ahmet Kurt
-# =========================================================
+
 
     pred = model.predict(X_test)
     print(f"\nAccuracy Score: {accuracy_score(y_test_enc, pred):.4f}")
