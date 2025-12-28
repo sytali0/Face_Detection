@@ -1,5 +1,6 @@
 Face Recognition with OpenCV & SVM
 🇹🇷 Türkçe Açıklama
+
 📌 Proje Tanımı
 
 Bu proje, OpenCV, face_recognition ve Support Vector Machine (SVM) kullanarak yüz tanıma yapan bir Python uygulamasıdır.
@@ -126,6 +127,7 @@ Modelin .pkl olarak kaydedilmesi
 Cross-validation ve hiperparametre optimizasyonu
 
 🇬🇧 English Version
+
 📌 Project Description
 
 This project is a Python-based face recognition application developed using OpenCV, face_recognition, and Support Vector Machines (SVM).
