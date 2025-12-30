@@ -10,7 +10,7 @@ Proje, ders kapsamında geliştirilmiş olup yüz algılama, özellik çıkarım
 
 Görüntülerden yüzleri otomatik olarak algılamak
 
-Algılanan yüzleri kırpıp ön işleme tabi tutmak
+Algılanan yüzler i kırpıp ön işleme tabi tutmak
 
 Yüzlerden embedding (özellik vektörü) çıkarmak
 
